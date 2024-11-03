@@ -1,7 +1,20 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
+  "extends": [
+    "next/core-web-vitals",
+    "eslint-config-next",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
   "rules": {
-    "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
-    "jsx-quotes": ["error", "prefer-single"]
+    "prettier/prettier": [
+      "warn",
+      {
+        "singleQuote": true,
+        "parser": "flow"
+      }
+    ],
+    "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }]
   }
 }
