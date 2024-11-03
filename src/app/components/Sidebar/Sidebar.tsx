@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import VideoList from './VideoList';
 import { YoutubeVideo } from '@/app/types';
+import SearchBar from './SearchBar';
 
 interface SidebarProps {
   videos: YoutubeVideo[];
@@ -42,15 +43,13 @@ export default function Sidebar({
 
   return (
     <div className='flex flex-col min-h-[400px] md:h-screen flex-1 md:flex-none w-full md:w-[350px] bg-white shadow-lg order-2 md:order-1'>
-      <div className='p-4 md:p-5 border-b border-gray-100'>
-        Searchbar Goes Here
-      </div>
+      <SearchBar searchQuery={searchQuery} onSearch={onSearch} />
       <VideoList
         videos={paginatedVideos}
         selectedVideo={selectedVideo}
         searchQuery={searchQuery}
         onVideoSelect={onVideoSelect}
-        setSearchQuery={onSearch}
+        onSearch={onSearch}
       />
       <div className='p-3 md:p-4 border-t border-gray-100 bg-[var(--background)]'>
         Pagination Goes Here
