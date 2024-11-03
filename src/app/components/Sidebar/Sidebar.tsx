@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import VideoList from './VideoList';
-import { YoutubeVideo } from '@/app/types';
 import SearchBar from './SearchBar';
+import Pagination from './Pagination';
+import type { YoutubeVideo } from '@/app/types';
 
 interface SidebarProps {
   videos: YoutubeVideo[];
@@ -51,9 +52,11 @@ export default function Sidebar({
         onVideoSelect={onVideoSelect}
         onSearch={onSearch}
       />
-      <div className='p-3 md:p-4 border-t border-gray-100 bg-[var(--background)]'>
-        Pagination Goes Here
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }
