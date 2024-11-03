@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import type { YoutubeVideo } from '@/app/types';
 
 interface VideoItemProps {
   video: YoutubeVideo;

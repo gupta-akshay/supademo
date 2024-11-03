@@ -1,5 +1,4 @@
 import VideoItem from './VideoItem';
-import type { YoutubeVideo } from '@/app/types';
 
 interface VideoListProps {
   videos: YoutubeVideo[];

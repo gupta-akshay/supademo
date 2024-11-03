@@ -1,4 +1,4 @@
-export interface YoutubeResponse {
+interface YoutubeResponse {
   kind: string;
   etag: string;
   nextPageToken: string;
@@ -12,7 +12,7 @@ interface PageInfo {
   resultsPerPage: number;
 }
 
-export interface YoutubeVideo {
+interface YoutubeVideo {
   kind: string;
   etag: string;
   id: {

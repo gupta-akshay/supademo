@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import VideoList from './VideoList';
 import SearchBar from './SearchBar';
 import Pagination from './Pagination';
-import type { YoutubeVideo } from '@/app/types';
 
 interface SidebarProps {
   videos: YoutubeVideo[];
