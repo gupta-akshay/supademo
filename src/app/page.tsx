@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Sidebar from '@/app/components/Sidebar';
 import { YoutubeResponse, YoutubeVideo } from '@/app/types';
 
 export default function Home() {
   const [videos, setVideos] = useState<YoutubeVideo[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<YoutubeVideo | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const loadVideos = async () => {
@@ -29,7 +32,15 @@ export default function Home() {
           </div>
         )}
       </main>
-      <div className='flex flex-col min-h-[400px] md:h-screen flex-1 md:flex-none w-full md:w-[350px] bg-white shadow-lg order-2 md:order-1'>Sidebar</div>
+      <Sidebar
+        videos={videos}
+        selectedVideo={selectedVideo}
+        currentPage={currentPage}
+        searchQuery={searchQuery}
+        onVideoSelect={setSelectedVideo}
+        onPageChange={setCurrentPage}
+        onSearch={setSearchQuery}
+      />
     </div>
   );
 }
