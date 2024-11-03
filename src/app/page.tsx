@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Sidebar from '@/app/components/Sidebar';
+import VideoPlayer from '@/app/components/VideoPlayer';
 
 export default function Home() {
   const [videos, setVideos] = useState<YoutubeVideo[]>([]);
@@ -20,11 +21,13 @@ export default function Home() {
 
   return (
     <div className='flex flex-col md:flex-row min-h-screen bg-gray-50'>
-      <main className='fflex-1 md:flex md:items-center md:justify-center order-1 md:order-2'>
+      <main className="flex-1 md:flex md:items-center md:justify-center order-1 md:order-2">
         {selectedVideo ? (
-          <div className='w-full max-w-5xl p-4 md:p-8'>Selected Video</div>
+          <div className="w-full max-w-5xl p-4 md:p-8">
+            <VideoPlayer videoData={selectedVideo} />
+          </div>
         ) : (
-          <div className='text-gray-500 p-4'>
+          <div className="text-gray-500 p-4">
             <p>Select a video to get started</p>
           </div>
         )}

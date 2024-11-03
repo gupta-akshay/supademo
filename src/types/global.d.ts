@@ -16,23 +16,23 @@ interface YoutubeVideo {
   kind: string;
   etag: string;
   id: {
-    kind: string;
-    videoId?: string;
-    channelId?: string;
+    kind: string,
+    videoId?: string,
+    channelId?: string,
   };
   snippet: {
-    publishedAt: string;
-    channelId: string;
-    title: string;
-    description: string;
+    publishedAt: string,
+    channelId: string,
+    title: string,
+    description: string,
     thumbnails: {
-      default: Thumbnail;
-      medium: Thumbnail;
-      high: Thumbnail;
-    };
-    channelTitle: string;
-    liveBroadcastContent: string;
-    publishTime: string;
+      default: Thumbnail,
+      medium: Thumbnail,
+      high: Thumbnail,
+    },
+    channelTitle: string,
+    liveBroadcastContent: string,
+    publishTime: string,
   };
 }
 
@@ -40,4 +40,9 @@ interface Thumbnail {
   url: string;
   width: number;
   height: number;
+}
+
+interface Window {
+  YT: typeof YT;
+  onYouTubeIframeAPIReady: (() => void) | undefined;
 }
