@@ -2,6 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { PLAYER_CONFIG } from '@/app/constants/video';
 import { useVideoState } from '@/app/hooks/video';
 
+/**
+ * Internal hook to manage player state
+ */
 function usePlayerState() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
@@ -18,6 +21,9 @@ function usePlayerState() {
   };
 }
 
+/**
+ * Internal hook to manage interval cleanup
+ */
 function useIntervalManager() {
   const checkIntervalRef = useRef<NodeJS.Timeout>();
 
@@ -31,10 +37,15 @@ function useIntervalManager() {
   return { checkIntervalRef, clearCheckInterval };
 }
 
+/**
+ * Main hook to manage YouTube video player functionality
+ * Handles player initialization, state management, and video controls
+ */
 export default function useVideoPlayer(
   videoData: YoutubeVideo,
   videoState: ReturnType<typeof useVideoState>
 ) {
+  // Initialize player state and refs
   const {
     isPlaying,
     setIsPlaying,
@@ -45,13 +56,15 @@ export default function useVideoPlayer(
   } = usePlayerState();
 
   const { checkIntervalRef, clearCheckInterval } = useIntervalManager();
-  const lastSeekTime = useRef<number>(0);
-  const isSeekingRef = useRef<boolean>(false);
-  const userInitiatedRef = useRef<boolean>(false);
+  const lastSeekTime = useRef<number>(0);        // Debounce seek operations
+  const isSeekingRef = useRef<boolean>(false);   // Track seeking state
+  const userInitiatedRef = useRef<boolean>(false); // Track user-initiated plays
 
   const { trimStart, trimEndRef, updateDuration } = videoState;
 
-  // Helper function to check if player is ready and has methods
+  /**
+   * Checks if player is ready and has all required methods
+   */
   const isPlayerReady = useCallback(() => {
     return (
       playerRef.current &&
@@ -63,13 +76,15 @@ export default function useVideoPlayer(
     );
   }, [playerReady]);
 
-  // Debounced seek function
+  /**
+   * Debounced seek function to prevent too many seek operations
+   */
   const seekTo = useCallback(
     (time: number) => {
       if (!isPlayerReady()) return;
 
       const now = Date.now();
-      if (now - lastSeekTime.current < 200) return;
+      if (now - lastSeekTime.current < 200) return; // Debounce seeks
 
       try {
         isSeekingRef.current = true;
@@ -86,6 +101,10 @@ export default function useVideoPlayer(
     [isPlayerReady]
   );
 
+  /**
+   * Handles player ready event
+   * Initializes player state and seeks to trim start if needed
+   */
   const handlePlayerReady = useCallback(
     (event: YT.PlayerEvent) => {
       try {
@@ -108,6 +127,10 @@ export default function useVideoPlayer(
     [trimStart, updateDuration, setIsPlaying, setPlayerReady]
   );
 
+  /**
+   * Handles player state changes
+   * Manages play/pause states and trim end detection
+   */
   const handlePlayerStateChange = useCallback(
     (event: YT.OnStateChangeEvent) => {
       const newState = event.data;
@@ -165,6 +188,10 @@ export default function useVideoPlayer(
     [isPlaying, clearCheckInterval]
   );
 
+  /**
+   * Handles play/pause button clicks
+   * Manages user-initiated playback and trim start positioning
+   */
   const handlePlayPause = useCallback(() => {
     if (!playerRef.current || !playerReady) return;
 
@@ -190,14 +217,17 @@ export default function useVideoPlayer(
     }
   }, [isPlaying, playerReady, trimStart]);
 
-  // Reset states when video changes
+  // Effect to reset states on video change
   useEffect(() => {
     setIsPlaying(false);
     setPlayerReady(false);
     userInitiatedRef.current = false;
   }, [videoData?.id?.videoId]);
 
-  // Initialize player with autoplay disabled
+  /**
+   * Initializes or reinitializes the YouTube player
+   * Sets up event handlers and player configuration
+   */
   const initializePlayer = useCallback(() => {
     if (!videoData?.id?.videoId || !playerContainerRef.current) return;
 
@@ -244,6 +274,7 @@ export default function useVideoPlayer(
     handlePlayerReady,
   ]);
 
+  // Cleanup effect
   useEffect(() => {
     const cleanup = () => {
       clearCheckInterval();
@@ -259,6 +290,7 @@ export default function useVideoPlayer(
     return cleanup;
   }, [clearCheckInterval]);
 
+  // YouTube API initialization effect
   useEffect(() => {
     if (window.YT) {
       initializePlayer();
@@ -280,14 +312,14 @@ export default function useVideoPlayer(
     };
   }, []);
 
-  // Initialize player when YT is ready
+  // Player initialization effect
   useEffect(() => {
     if (window.YT) {
       initializePlayer();
     }
   }, [videoData?.id?.videoId]);
 
-  // Handle video changes
+  // Video change cleanup effect
   useEffect(() => {
     console.log('Video changed, cleaning up...');
 
@@ -313,7 +345,7 @@ export default function useVideoPlayer(
     }
   }, [videoData?.id?.videoId, clearCheckInterval]);
 
-  // Add this effect to ensure video stays paused during initialization
+  // Initialization pause effect
   useEffect(() => {
     if (
       playerRef.current &&
