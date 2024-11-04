@@ -13,7 +13,9 @@ export default function SearchBar({ searchQuery, onSearch }: SearchBarProps) {
   const debouncedSearch = useCallback(
     debounce((query: string) => {
       setIsLoading(false);
-      onSearch(query);
+      if (query.trim().length > 0) {
+        onSearch(query.trim());
+      }
     }, 300),
     [onSearch]
   );
@@ -21,8 +23,14 @@ export default function SearchBar({ searchQuery, onSearch }: SearchBarProps) {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setInputValue(query);
-    setIsLoading(true);
-    debouncedSearch(query);
+    
+    if (query.trim()) {
+      setIsLoading(true);
+      debouncedSearch(query);
+    } else {
+      setIsLoading(false);
+      onSearch('');
+    }
   };
 
   return (
