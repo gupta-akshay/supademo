@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { debounce } from '@/app/utils/debounce';
 
 interface SearchBarProps {
@@ -9,6 +9,10 @@ interface SearchBarProps {
 export default function SearchBar({ searchQuery, onSearch }: SearchBarProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState(searchQuery);
+
+  useEffect(() => {
+    setInputValue(searchQuery);
+  }, [searchQuery]);
 
   const debouncedSearch = useCallback(
     debounce((query: string) => {
