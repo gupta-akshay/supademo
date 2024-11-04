@@ -3,12 +3,11 @@ export const YOUTUBE_API_URL = 'https://www.youtube.com/iframe_api';
 export const PLAYER_CONFIG = {
   autoplay: 0,
   controls: 0,
-  disabnlekb: 1,
+  disablekb: 1,
   fs: 0,
   modestbranding: 1,
+  playsinline: 1,
   rel: 0,
   showinfo: 0,
-  iv_load_policy: 3,
-  cc_load_policy: 0,
-  playsinline: 1,
-};
+  enablejsapi: 1,
+} as const;

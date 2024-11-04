@@ -31,6 +31,7 @@ export default function VideoItem({
             src={video.snippet.thumbnails.medium.url}
             alt={video.snippet.title}
             fill
+            sizes='(min-width: 768px) 128px, 96px'
             className='object-cover w-full h-full'
           />
         </div>
