@@ -18,6 +18,11 @@ export default function Home() {
     currentPage
   );
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
   return (
     <div className='flex flex-col md:flex-row min-h-screen bg-gray-50'>
       <main className='flex-1 md:flex md:items-center md:justify-center order-1 md:order-2'>
@@ -39,7 +44,7 @@ export default function Home() {
         searchQuery={searchQuery}
         onVideoSelect={setSelectedVideo}
         onPageChange={setCurrentPage}
-        onSearch={setSearchQuery}
+        onSearch={handleSearch}
       />
     </div>
   );
