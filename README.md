@@ -75,3 +75,9 @@ src/
 - `useVideoTrim`: Controls trim slider functionality
 - `useSearch`: Filters videos based on search query
 - `usePagination`: Handles video list pagination
+
+## Known Behaviors
+
+- **Video Playback Position**: When using the trim functionality, the video will always resume from the set start trim position rather than the last paused position. For instance, if you pause the video midway and adjust the trim settings, the playback will restart from the defined trim start point.
+
+- **YouTube IFrame Interactions**: Direct interactions with YouTube player controls within the iframe (such as the native progress bar, volume controls, or settings) are currently blocked. All video control must be done through the application's custom controls (which are currently only play/pause and trim).
