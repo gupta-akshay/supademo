@@ -1,5 +1,3 @@
-import { formatTime } from '@/app/utils/time';
-
 interface VideoControlsProps {
   isPlaying: boolean;
   playerReady: boolean;

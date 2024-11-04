@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 export default function VideoPlayer({
   videoData,
 }: {
-  videoData: YoutubeVideo,
+  videoData: YoutubeVideo;
 }) {
   const videoState = useVideoState(videoData);
 
@@ -25,7 +25,7 @@ export default function VideoPlayer({
     trimEndPercentage,
     handleTrimStartChange,
     handleTrimEndChange,
-  } = useVideoTrim(videoData, videoState, seekTo, playerReady);
+  } = useVideoTrim(videoState, seekTo, playerReady);
 
   const { trimStart } = videoState;
 

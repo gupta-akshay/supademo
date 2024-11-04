@@ -7,20 +7,20 @@ function usePlayerState() {
   const [playerReady, setPlayerReady] = useState(false);
   const playerRef = useRef<YT.Player | null>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
-  
+
   return {
     isPlaying,
     setIsPlaying,
     playerReady,
     setPlayerReady,
     playerRef,
-    playerContainerRef
+    playerContainerRef,
   };
 }
 
 function useIntervalManager() {
   const checkIntervalRef = useRef<NodeJS.Timeout>();
-  
+
   const clearCheckInterval = useCallback(() => {
     if (checkIntervalRef.current) {
       clearInterval(checkIntervalRef.current);
@@ -35,11 +35,15 @@ export default function useVideoPlayer(
   videoData: YoutubeVideo,
   videoState: ReturnType<typeof useVideoState>
 ) {
-  const { 
-    isPlaying, setIsPlaying, playerReady, setPlayerReady, 
-    playerRef, playerContainerRef 
+  const {
+    isPlaying,
+    setIsPlaying,
+    playerReady,
+    setPlayerReady,
+    playerRef,
+    playerContainerRef,
   } = usePlayerState();
-  
+
   const { checkIntervalRef, clearCheckInterval } = useIntervalManager();
   const lastSeekTime = useRef<number>(0);
   const isSeekingRef = useRef<boolean>(false);
@@ -82,30 +86,36 @@ export default function useVideoPlayer(
     [isPlayerReady]
   );
 
-  const handlePlayerReady = useCallback((event: YT.PlayerEvent) => {
-    try {
-      const player = event.target;
-      playerRef.current = player;
-      
-      player.pauseVideo();
-      setIsPlaying(false);
-      updateDuration(player.getDuration());
-      setPlayerReady(true);
+  const handlePlayerReady = useCallback(
+    (event: YT.PlayerEvent) => {
+      try {
+        const player = event.target;
+        playerRef.current = player;
 
-      if (trimStart > 0) {
-        player.seekTo(trimStart, true);
+        player.pauseVideo();
+        setIsPlaying(false);
+        updateDuration(player.getDuration());
+        setPlayerReady(true);
+
+        if (trimStart > 0) {
+          player.seekTo(trimStart, true);
+        }
+      } catch (error) {
+        console.error('Error in handlePlayerReady:', error);
+        setPlayerReady(false);
       }
-    } catch (error) {
-      console.error('Error in handlePlayerReady:', error);
-      setPlayerReady(false);
-    }
-  }, [trimStart, updateDuration, setIsPlaying, setPlayerReady]);
+    },
+    [trimStart, updateDuration, setIsPlaying, setPlayerReady]
+  );
 
   const handlePlayerStateChange = useCallback(
     (event: YT.OnStateChangeEvent) => {
       const newState = event.data;
 
-      if (!userInitiatedRef.current && newState === window.YT.PlayerState.PLAYING) {
+      if (
+        !userInitiatedRef.current &&
+        newState === window.YT.PlayerState.PLAYING
+      ) {
         event.target.pauseVideo();
         setIsPlaying(false);
         return;
@@ -115,22 +125,25 @@ export default function useVideoPlayer(
       if (userInitiatedRef.current) {
         const isNowPlaying = newState === window.YT.PlayerState.PLAYING;
         setIsPlaying(isNowPlaying);
-        
+
         if (isNowPlaying) {
           clearCheckInterval();
-          
+
           checkIntervalRef.current = setInterval(() => {
             // Check if player still exists and has methods
             if (!playerRef.current?.getCurrentTime) {
               clearCheckInterval();
               return;
             }
-            
+
             try {
               const currentTime = playerRef.current.getCurrentTime();
               const currentTrimEnd = trimEndRef.current;
 
-              if (currentTrimEnd !== null && currentTime >= currentTrimEnd - 0.1) {
+              if (
+                currentTrimEnd !== null &&
+                currentTime >= currentTrimEnd - 0.1
+              ) {
                 console.log('Reached trim end, pausing');
                 if (playerRef.current?.pauseVideo) {
                   playerRef.current.pauseVideo();
@@ -162,12 +175,12 @@ export default function useVideoPlayer(
         userInitiatedRef.current = false;
       } else {
         userInitiatedRef.current = true;
-        
+
         const currentTime = playerRef.current.getCurrentTime();
         if (Math.abs(currentTime - trimStart) > 0.1) {
           playerRef.current.seekTo(trimStart, true);
         }
-        
+
         playerRef.current.playVideo();
       }
     } catch (error) {
@@ -219,7 +232,7 @@ export default function useVideoPlayer(
           onStateChange: handlePlayerStateChange,
         },
       });
-      
+
       playerRef.current = newPlayer;
     } catch (error) {
       console.error('Error initializing player:', error);
@@ -246,7 +259,7 @@ export default function useVideoPlayer(
     return cleanup;
   }, [clearCheckInterval]);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (window.YT) {
       initializePlayer();
       return;
@@ -277,7 +290,7 @@ export default function useVideoPlayer(
   // Handle video changes
   useEffect(() => {
     console.log('Video changed, cleaning up...');
-    
+
     // Clear the check interval
     clearCheckInterval();
 

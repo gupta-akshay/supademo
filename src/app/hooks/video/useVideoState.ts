@@ -48,7 +48,10 @@ export default function useVideoState(videoData: YoutubeVideo) {
   const updateDuration = (value: number) => {
     setDuration(value);
     // Only set trimEnd to duration if there's no stored value and trimEnd is null
-    if (trimEnd === null && !localStorage.getItem(`${videoData?.id?.videoId}_trimEnd`)) {
+    if (
+      trimEnd === null &&
+      !localStorage.getItem(`${videoData?.id?.videoId}_trimEnd`)
+    ) {
       updateTrimEnd(value);
     }
   };

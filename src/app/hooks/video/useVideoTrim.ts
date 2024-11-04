@@ -1,13 +1,11 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useVideoState } from '@/app/hooks/video';
 
 export default function useVideoTrim(
-  videoData: YoutubeVideo,
   videoState: ReturnType<typeof useVideoState>,
   seekTo: (time: number) => void,
   playerReady: boolean
 ) {
-  const [step, setStep] = useState(0.1);
   const sliderContainerRef = useRef<HTMLDivElement>(null);
   const rangeRef = useRef<HTMLDivElement>(null);
 
