@@ -1,11 +1,32 @@
+import { useState, useCallback } from 'react';
+import { debounce } from '@/app/utils/debounce';
+
 interface SearchBarProps {
   searchQuery: string;
   onSearch: (query: string) => void;
 }
 
 export default function SearchBar({ searchQuery, onSearch }: SearchBarProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputValue, setInputValue] = useState(searchQuery);
+
+  const debouncedSearch = useCallback(
+    debounce((query: string) => {
+      setIsLoading(false);
+      onSearch(query);
+    }, 300),
+    [onSearch]
+  );
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setInputValue(query);
+    setIsLoading(true);
+    debouncedSearch(query);
+  };
+
   return (
-    <div className='p-4 md:p-5 border-b border-gray-100'>
+    <div className='sticky top-0 z-10 p-4 md:p-5 border-b border-gray-100 bg-white/95 backdrop-blur-sm'>
       <div className='relative'>
         <input
           type='text'
@@ -14,22 +35,29 @@ export default function SearchBar({ searchQuery, onSearch }: SearchBarProps) {
                    focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-50 
                    text-sm transition-all duration-200 shadow-sm
                    text-[var(--foreground)] placeholder-[var(--gray-500)]'
-          value={searchQuery}
-          onChange={(e) => onSearch(e.target.value)}
+          value={inputValue}
+          onChange={handleSearch}
         />
-        <svg
-          className='absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gray-500)] w-4 h-4'
-          fill='none'
-          viewBox='0 0 24 24'
-          stroke='currentColor'
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            strokeWidth={2}
-            d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-          />
-        </svg>
+
+        {isLoading ? (
+          <div className='absolute right-3 top-1/2 -translate-y-1/2'>
+            <div className='w-4 h-4 border-2 border-gray-300 border-t-primary rounded-full animate-spin' />
+          </div>
+        ) : (
+          <svg
+            className='absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gray-500)] w-4 h-4'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+            />
+          </svg>
+        )}
       </div>
     </div>
   );

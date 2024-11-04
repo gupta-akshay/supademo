@@ -33,11 +33,13 @@ export default function Sidebar({
         onVideoSelect={onVideoSelect}
         onSearch={onSearch}
       />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-      />
+      {videos.length > 0 ? (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
+      ) : null}
     </div>
   );
 }

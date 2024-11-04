@@ -15,7 +15,7 @@ export default function VideoList({
   onVideoSelect,
   onSearch,
 }: VideoListProps) {
-  if (videos.length === 0) {
+  if (videos.length === 0 && searchQuery.trim().length > 0) {
     return (
       <div className='flex flex-col items-center justify-center h-full p-4 text-center'>
         <svg
