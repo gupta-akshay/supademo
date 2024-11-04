@@ -1,23 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Sidebar from '@/app/components/Sidebar';
 import VideoPlayer from '@/app/components/VideoPlayer';
+import { useVideoData } from '@/app/hooks/video';
+import { useSearch } from '@/app/hooks/search';
+import { usePagination } from '@/app/hooks/pagination';
 
 export default function Home() {
-  const [videos, setVideos] = useState<YoutubeVideo[]>([]);
-  const [selectedVideo, setSelectedVideo] = useState<YoutubeVideo | null>(null);
+  const { videos, selectedVideo, setSelectedVideo } = useVideoData();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    const loadVideos = async () => {
-      const response = await import('@/app/data/data.json');
-      const data = response.default as YoutubeResponse;
-      setVideos(data.items);
-    };
-    loadVideos();
-  }, []);
+  const { filteredVideos } = useSearch(videos, searchQuery);
+  const { paginatedVideos, totalPages } = usePagination(filteredVideos, currentPage);
 
   return (
     <div className='flex flex-col md:flex-row min-h-screen bg-gray-50'>
@@ -33,9 +29,10 @@ export default function Home() {
         )}
       </main>
       <Sidebar
-        videos={videos}
+        videos={paginatedVideos}
         selectedVideo={selectedVideo}
         currentPage={currentPage}
+        totalPages={totalPages}
         searchQuery={searchQuery}
         onVideoSelect={setSelectedVideo}
         onPageChange={setCurrentPage}
