@@ -4,6 +4,7 @@ export default function useVideoData() {
   const [videos, setVideos] = useState<YoutubeVideo[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<YoutubeVideo | null>(null);
 
+  // Load videos from local JSON file on component mount
   useEffect(() => {
     const loadVideos = async () => {
       const response = await import('@/app/data/data.json');
